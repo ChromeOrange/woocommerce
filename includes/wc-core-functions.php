@@ -1065,7 +1065,7 @@ function wc_setcookie( $name, $value, $expire = 0, $secure = false, $httponly = 
 
 			setcookie( $name, $value, $args); 
 		} else {
-			setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN . '; samesite=NONE', $secure, apply_filters( 'woocommerce_cookie_httponly', $httponly, $name, $value, $expire, $secure ) );
+			setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN . '; samesite=NONE', TRUE, apply_filters( 'woocommerce_cookie_httponly', $httponly, $name, $value, $expire, $secure ) );
 		}
 
 	} elseif ( Constants::is_true( 'WP_DEBUG' ) ) {
