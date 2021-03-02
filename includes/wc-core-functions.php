@@ -1052,7 +1052,6 @@ function wc_setcookie( $name, $value, $expire = 0, $secure = false, $httponly = 
 	if ( ! headers_sent() ) {
 		
 		if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
-			
 			$args = array (
 					'expires' 	=> $expire, 
 					'path' 		=> COOKIEPATH ? COOKIEPATH : '/', 
