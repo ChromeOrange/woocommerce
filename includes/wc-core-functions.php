@@ -1050,19 +1050,24 @@ function wc_print_js() {
 function wc_setcookie( $name, $value, $expire = 0, $secure = false, $httponly = false ) {
 
 	if ( ! headers_sent() ) {
-
-		$args = array (
-                'expires' 	=> $expire, 
-                'path' 		=> COOKIEPATH ? COOKIEPATH : '/', 
-                'domain' 	=> COOKIE_DOMAIN,
-                'secure' 	=> $secure,
-                'httponly' 	=> apply_filters( 'woocommerce_cookie_httponly', $httponly, $name, $value, $expire, $secure ),
-                'samesite' 	=> 'None'
-                );
-
-        $args = apply_filters( 'woocommerce_cookie_args', $args, $name, $value );
 		
-		setcookie( $name, $value, $args); 
+		if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
+			
+			$args = array (
+					'expires' 	=> $expire, 
+					'path' 		=> COOKIEPATH ? COOKIEPATH : '/', 
+					'domain' 	=> COOKIE_DOMAIN,
+					'secure' 	=> true,
+					'httponly' 	=> apply_filters( 'woocommerce_cookie_httponly', $httponly, $name, $value, $expire, $secure ),
+					'samesite' 	=> 'None'
+					);
+
+			$args = apply_filters( 'woocommerce_cookie_args', $args, $name, $value );
+
+			setcookie( $name, $value, $args); 
+		} else {
+			setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN . '; samesite=NONE', $secure, apply_filters( 'woocommerce_cookie_httponly', $httponly, $name, $value, $expire, $secure ) );
+		}
 
 	} elseif ( Constants::is_true( 'WP_DEBUG' ) ) {
 		headers_sent( $file, $line );
