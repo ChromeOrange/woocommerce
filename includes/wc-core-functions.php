@@ -1048,12 +1048,27 @@ function wc_print_js() {
  * @param  bool    $httponly Whether the cookie is only accessible over HTTP, not scripting languages like JavaScript. @since 3.6.0.
  */
 function wc_setcookie( $name, $value, $expire = 0, $secure = false, $httponly = false ) {
+
 	if ( ! headers_sent() ) {
-		setcookie( $name, $value, $expire, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, $secure, apply_filters( 'woocommerce_cookie_httponly', $httponly, $name, $value, $expire, $secure ) );
+
+		$args = array (
+                'expires' 	=> $expire, 
+                'path' 		=> COOKIEPATH ? COOKIEPATH : '/', 
+                'domain' 	=> COOKIE_DOMAIN,
+                'secure' 	=> $secure,
+                'httponly' 	=> apply_filters( 'woocommerce_cookie_httponly', $httponly, $name, $value, $expire, $secure ),
+                'samesite' 	=> 'None'
+                );
+
+        $args = apply_filters( 'woocommerce_cookie_args', $args, $name, $value );
+		
+		setcookie( $name, $value, $args); 
+
 	} elseif ( Constants::is_true( 'WP_DEBUG' ) ) {
 		headers_sent( $file, $line );
 		trigger_error( "{$name} cookie cannot be set - headers already sent by {$file} on line {$line}", E_USER_NOTICE ); // @codingStandardsIgnoreLine
 	}
+
 }
 
 /**
